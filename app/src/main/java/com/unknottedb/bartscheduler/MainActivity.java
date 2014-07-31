@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.w3c.dom.Document;
@@ -32,8 +33,9 @@ public class MainActivity extends ActionBarActivity {
     private static final String LOG = "Main Activity";
 
     Button mXMLButton;
-    TextView mXMLTextView;
-    List<BartStation> mStations;
+    ArrayList<BartStation> mStations;
+    ScheduleAdapter mAdapter;
+    ListView mListView;
 
     static final String url = "http://api.bart.gov/api/stn.aspx?cmd=stns&key=MW9S-E7SL-26DU-VV8V";
 
@@ -55,7 +57,7 @@ public class MainActivity extends ActionBarActivity {
 
 
         mXMLButton = (Button)findViewById(R.id.XML_button);
-        mXMLTextView = (TextView)findViewById(R.id.XML_textView);
+        mListView = (ListView)findViewById(R.id.stationListView);
         mXMLButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,13 +101,11 @@ public class MainActivity extends ActionBarActivity {
                 Station.setAbbr(parser.getValue(e,NODE_ABBR));
                 mStations.add(Station);
             }
-            mXMLTextView.setText(mStations.get(0).getName());
-            //listViewAdapter = new CustomListViewAdapter(context, employees);
-            //listView.setAdapter(listViewAdapter);
+            mAdapter = new ScheduleAdapter(context, mStations);
+            mListView.setAdapter(mAdapter);
         }
 
-        /* uses HttpURLConnection to make Http request from Android to download
-         the XML file */
+
         private String getXmlFromUrl(String urlString) {
             StringBuffer output = new StringBuffer("");
 
